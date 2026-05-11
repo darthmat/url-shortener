@@ -7,7 +7,7 @@ export class Url {
   readonly originalUrl: URL;
   readonly shortCode: string;
   readonly createdAt: Date;
-  readonly expiresAt: Date;
+  readonly expiresAt: Date | null;
 
   private constructor(readonly data: UrlData) {
     ({
@@ -18,8 +18,9 @@ export class Url {
     } = data);
   }
 
-  static create(data: { originalUrl: string; expiresAt: Date }): Url {
+  static create(data: UrlCreateDTO): Url {
     const url = new URL(data.originalUrl);
+
     if (data.originalUrl.length < this.minTitleLength) {
       throw new ValidationError(
         `Original URL must be at least ${this.minTitleLength} characters long`,
@@ -38,11 +39,15 @@ export class Url {
       );
     }
 
+    if (data.expiresAt && data.expiresAt <= new Date()) {
+      throw new ValidationError('Expiration date must be in the future');
+    }
+
     return new Url({
       originalUrl: url,
       shortCode: nanoid(8),
       createdAt: new Date(),
-      expiresAt: data.expiresAt,
+      expiresAt: data.expiresAt ?? null,
     });
   }
 
@@ -55,5 +60,10 @@ export interface UrlData {
   originalUrl: URL;
   shortCode: string;
   createdAt: Date;
-  expiresAt: Date;
+  expiresAt: Date | null;
+}
+
+interface UrlCreateDTO {
+  originalUrl: string;
+  expiresAt?: Date | null;
 }

@@ -6,5 +6,5 @@ export interface IAnalyticsRepository {
 }
 
 export interface IAnalyticsService {
-  getAnalyticsByShortCode(shortCode: string): Promise<AnalyticReportDTO | null>;
+  getAnalyticsByShortCode(shortCode: string): Promise<AnalyticReportDTO>;
 }

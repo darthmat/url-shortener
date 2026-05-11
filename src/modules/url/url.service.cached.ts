@@ -1,10 +1,10 @@
 import { Cache } from '@jeengbe/cache';
+import { UrlDTO } from './url.dto.js';
 import { IUrlService } from './url.interface.js';
-import { UrlDto } from './url.dto.js';
 
 export type CachedUrlServiceTypes = Record<
   `short-code:${string}`,
-  UrlDto | null
+  UrlDTO | null
 >;
 
 export class CachedUrlService implements IUrlService {
@@ -13,11 +13,11 @@ export class CachedUrlService implements IUrlService {
     private readonly cache: Cache<CachedUrlServiceTypes>,
   ) {}
 
-  async shortenUrl(originalUrl: string, expiresAt: Date): Promise<void> {
-    await this.delegate.shortenUrl(originalUrl, expiresAt);
+  async shortenUrl(originalUrl: string, expiresAt: Date): Promise<UrlDTO> {
+    return await this.delegate.shortenUrl(originalUrl, expiresAt);
   }
 
-  async getOriginalUrl(shortCode: string): Promise<UrlDto | null> {
+  async getOriginalUrl(shortCode: string): Promise<UrlDTO | null> {
     return await this.cache.cached(
       `short-code:${shortCode}`,
       () => this.delegate.getOriginalUrl(shortCode),

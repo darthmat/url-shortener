@@ -1,4 +1,4 @@
-import { UrlDto } from './url.dto.js';
+import { UrlDTO } from './url.dto.js';
 import { Url } from './url.model.js';
 
 export interface IUrlRepository {
@@ -7,8 +7,8 @@ export interface IUrlRepository {
 }
 
 export interface IUrlService {
-  shortenUrl(originalUrl: string, expiresAt: Date): Promise<void>;
-  getOriginalUrl(shortCode: string): Promise<UrlDto | null>;
+  shortenUrl(originalUrl: string, expiresAt?: Date | null): Promise<UrlDTO>;
+  getOriginalUrl(shortCode: string): Promise<UrlDTO | null>;
 }
 
 export interface IUrlEventPublisher {

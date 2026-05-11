@@ -14,7 +14,7 @@ export const initialMigration: Migration = {
       .addColumn('created_at', 'timestamp', (col) =>
         col.defaultTo(sql`now()`).notNull(),
       )
-      .addColumn('expires_at', 'timestamp', (col) => col.notNull())
+      .addColumn('expires_at', 'timestamp')
       .execute();
   },
   async down(db) {

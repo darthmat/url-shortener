@@ -1,6 +1,4 @@
-export interface UrlDto {
-  originalUrl: URL;
-  shortCode: string;
-  createdAt: Date;
-  expiresAt: Date;
-}
+import z from 'zod';
+import { urlDTOSchema } from './url.schema.js';
+
+export type UrlDTO = z.infer<typeof urlDTOSchema>;

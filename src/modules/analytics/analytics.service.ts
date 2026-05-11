@@ -6,6 +6,7 @@ import {
 } from './analytics.interface.js';
 import { AnalyticDTO, AnalyticReportDTO } from './analytics.dto.js';
 import { URL_ANALYTIC_EVENT } from '../url/url.publisher.js';
+import { EntityNotFoundError } from '@/utils/errors.js';
 
 export class AnalyticsServiceImpl implements IAnalyticsService {
   private readonly onGetAnalytic: (
@@ -43,9 +44,16 @@ export class AnalyticsServiceImpl implements IAnalyticsService {
       });
   }
 
-  async getAnalyticsByShortCode(
-    shortCode: string,
-  ): Promise<AnalyticReportDTO | null> {
-    return await this.analyticsRepository.getAnalyticsByShortCode(shortCode);
+  async getAnalyticsByShortCode(shortCode: string): Promise<AnalyticReportDTO> {
+    const report =
+      await this.analyticsRepository.getAnalyticsByShortCode(shortCode);
+
+    if (!report) {
+      throw new EntityNotFoundError(
+        `Analytics for code ${shortCode} not found`,
+      );
+    }
+
+    return report;
   }
 }

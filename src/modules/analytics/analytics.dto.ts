@@ -1,17 +1,8 @@
-export interface AnalyticReportDTO {
-  shortCode: string;
-  originalUrl: string;
-  urlCreatedAt: Date;
-  totalAccesses: number;
-  accessLogs: AccessLog[];
-}
+import { z } from 'zod';
+import {
+  analyticReportDTOSchema,
+  analyticDTOSchema,
+} from './analytics.schema.js';
 
-interface AccessLog {
-  ipAddress: string;
-  createdAt: Date;
-}
-
-export interface AnalyticDTO {
-  shortCode: string;
-  ipAddress: string;
-}
+export type AnalyticReportDTO = z.infer<typeof analyticReportDTOSchema>;
+export type AnalyticDTO = z.infer<typeof analyticDTOSchema>;

@@ -1,6 +1,15 @@
 import { FastifyBaseLogger, FastifyInstance } from 'fastify';
 import { IUrlEventPublisher, IUrlService } from './url.interface.js';
 import { EntityNotFoundError, ExpiredError } from '@/utils/errors.js';
+import { ZodTypeProvider } from 'fastify-type-provider-zod';
+import {
+  urlParamsSchema,
+  urlBodySchema,
+  urlDTOSchema,
+  rateLimitSchema,
+  errorSchema,
+} from './url.schema.js';
+import { UrlDTO } from './url.dto.js';
 
 export class UrlRouter {
   constructor(
@@ -9,39 +18,65 @@ export class UrlRouter {
     private readonly log: FastifyBaseLogger,
   ) {}
   register(fastify: FastifyInstance) {
-    fastify.get('/urls/:shortCode', async (req, res) => {
-      const { shortCode } = req.params as { shortCode: string };
-      const url = await this.urlService.getOriginalUrl(shortCode);
+    const server = fastify.withTypeProvider<ZodTypeProvider>();
 
-      this.urlEventPublisher
-        .urlAnalytic(shortCode, req.ip)
-        .catch((err: unknown) => {
-          this.log.error(
-            { err, shortCode },
-            'Failed to publish analytic event',
-          );
-        });
+    server.get(
+      '/urls/:shortCode',
+      {
+        schema: {
+          tags: ['URL'],
+          params: urlParamsSchema,
+          response: {
+            404: errorSchema,
+            410: errorSchema,
+            429: rateLimitSchema,
+          },
+        },
+      },
+      async (req, res) => {
+        const { shortCode } = req.params;
+        const url = await this.urlService.getOriginalUrl(shortCode);
 
-      if (!url) {
-        throw new EntityNotFoundError('URL not found');
-      }
+        this.urlEventPublisher
+          .urlAnalytic(shortCode, req.ip)
+          .catch((err: unknown) => {
+            this.log.error(
+              { err, shortCode },
+              'Failed to publish analytic event',
+            );
+          });
 
-      if (url.expiresAt < new Date()) {
-        throw new ExpiredError('URL has expired');
-      }
+        if (!url) {
+          throw new EntityNotFoundError('URL not found');
+        }
 
-      return await res.redirect(url.originalUrl.toString(), 302);
-    });
+        if (url.expiresAt && url.expiresAt < new Date()) {
+          throw new ExpiredError('URL has expired');
+        }
 
-    fastify.post('/urls', async (req, res) => {
-      const { originalUrl, expiresAt } = req.body as {
-        originalUrl: string;
-        expiresAt: Date;
-      };
+        return await res.redirect(url.originalUrl, 302);
+      },
+    );
 
-      await this.urlService.shortenUrl(originalUrl, expiresAt);
+    server.post(
+      '/urls',
+      {
+        schema: {
+          tags: ['URL'],
+          body: urlBodySchema,
+          response: {
+            201: urlDTOSchema,
+            429: rateLimitSchema,
+          },
+        },
+      },
+      async (req, res): Promise<UrlDTO> => {
+        const { originalUrl, expiresAt } = req.body;
 
-      return await res.status(201).send();
-    });
+        const url = await this.urlService.shortenUrl(originalUrl, expiresAt);
+
+        return await res.status(201).send(url);
+      },
+    );
   }
 }
