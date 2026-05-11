@@ -9,3 +9,7 @@ export interface IAnalyticsService {
   saveAnalytic(batch: AnalyticDTO[]): Promise<void>;
   getAnalyticsByShortCode(shortCode: string): Promise<AnalyticReportDTO>;
 }
+
+export interface IAnalyticsConsumer {
+  registerListeners(): void;
+}

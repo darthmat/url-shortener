@@ -1,9 +1,12 @@
 import EventEmitter from 'events';
 import { URL_ANALYTIC_EVENT } from '../url/url.publisher.js';
 import { AnalyticDTO } from './analytics.dto.js';
-import { IAnalyticsService } from './analytics.interface.js';
+import {
+  IAnalyticsConsumer,
+  IAnalyticsService,
+} from './analytics.interface.js';
 
-export class AnalyticsConsumer {
+export class AnalyticsConsumer implements IAnalyticsConsumer {
   private readonly onGetAnalytic: (
     shortCode: string,
     ipAddress: string,
