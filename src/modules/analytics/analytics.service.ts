@@ -5,6 +5,7 @@ import {
   IAnalyticsService,
 } from './analytics.interface.js';
 import { AnalyticDTO } from './analytics.dto.js';
+import { URL_ANALYTIC_EVENT } from '../url/url.publisher.js';
 
 export class AnalyticsServiceImpl implements IAnalyticsService {
   private readonly onGetAnalytic: (
@@ -28,7 +29,7 @@ export class AnalyticsServiceImpl implements IAnalyticsService {
   }
 
   registerListeners(): void {
-    this.eventEmitter.on('get:analytic', this.onGetAnalytic);
+    this.eventEmitter.on(URL_ANALYTIC_EVENT, this.onGetAnalytic);
   }
 
   private async saveAnalytic(

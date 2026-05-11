@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import { IUrlEventPublisher } from './url.interface.js';
 
-const URL_ANALYTIC_EVENT = 'url-analytic';
+export const URL_ANALYTIC_EVENT = 'url-analytic';
 
 export class UrlEventPublisher implements IUrlEventPublisher {
   constructor(private readonly eventEmitter: EventEmitter) {}
