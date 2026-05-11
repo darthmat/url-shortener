@@ -21,6 +21,13 @@ export class UnavailableServiceError extends Error {
   }
 }
 
+export class ExpiredError extends Error {
+  constructor(readonly message: string) {
+    super(message);
+    this.name = 'ExpiredError';
+  }
+}
+
 export class EntityNotFoundError extends Error {
   constructor(message: string);
   constructor(entityName: string, entityId: number | string);
@@ -44,6 +51,11 @@ export function errorHandler(
 ): void {
   if (err instanceof EntityNotFoundError) {
     res.status(404).send({ message: err.message });
+    return;
+  }
+
+  if (err instanceof ExpiredError) {
+    res.status(410).send({ message: err.message });
     return;
   }
 

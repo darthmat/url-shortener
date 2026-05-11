@@ -8,8 +8,8 @@ export interface UrlShortenerDatabaseTables {
 }
 
 interface UrlTable {
-  id: Generated<number>;
-  original_url: string;
   short_code: string;
+  original_url: string;
   created_at: Generated<Date>;
+  expires_at: Generated<Date>;
 }

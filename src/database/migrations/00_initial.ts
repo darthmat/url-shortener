@@ -7,12 +7,14 @@ export const initialMigration: Migration = {
   async up(db) {
     await db.schema
       .createTable('url')
-      .addColumn('id', 'serial', (col) => col.primaryKey())
+      .addColumn('short_code', 'varchar', (col) =>
+        col.notNull().primaryKey().unique(),
+      )
       .addColumn('original_url', 'varchar', (col) => col.notNull())
-      .addColumn('short_code', 'varchar', (col) => col.notNull())
       .addColumn('created_at', 'timestamp', (col) =>
         col.defaultTo(sql`now()`).notNull(),
       )
+      .addColumn('expires_at', 'timestamp', (col) => col.notNull())
       .execute();
 
     await db.schema
