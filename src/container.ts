@@ -14,33 +14,35 @@ import EventEmitter from 'events';
 import { AnalyticsServiceImpl } from './modules/analytics/analytics.service.js';
 import { AnalyticsRepository } from './modules/analytics/analytics.repository.js';
 import { AnalyticsRouter } from './modules/analytics/analytics.router.js';
+import { AnalyticsConsumer } from './modules/analytics/analytics.consumer.js';
 
 export async function container(config: Config, logger: FastifyBaseLogger) {
   const db = createDatabase(config.database);
-  const appEvents = new EventEmitter();
   const redisClient = await createRedisClient(config);
-  const cacheClient = new RedisCacheAdapter(redisClient);
+  const appEvents = new EventEmitter();
+
+  const analyticsRepo = new AnalyticsRepository(db);
+  const analyticsService = new AnalyticsServiceImpl(analyticsRepo, logger);
+
+  const urlRepo = new UrlRepository(db);
+  const cacheAdapter = new RedisCacheAdapter(redisClient);
+
+  const baseUrlService = new UrlService(urlRepo);
+  const urlService = new CachedUrlService(
+    baseUrlService,
+    new Cache(cacheAdapter),
+  );
+
   const urlEventPublisher = new UrlEventPublisher(appEvents);
 
+  const analyticsConsumer = new AnalyticsConsumer(analyticsService, appEvents);
+  analyticsConsumer.registerListeners();
+
   const healthzRouter = new HealthzRouter();
-  const urlRouter = new UrlRouter(
-    new CachedUrlService(
-      new UrlService(new UrlRepository(db)),
-      new Cache(cacheClient),
-    ),
-    urlEventPublisher,
-    logger,
-  );
-
-  const analyticsService = new AnalyticsServiceImpl(
-    new AnalyticsRepository(db),
-    appEvents,
-    logger,
-  );
-
-  analyticsService.registerListeners();
-
+  const urlRouter = new UrlRouter(urlService, urlEventPublisher, logger);
   const analyticsRouter = new AnalyticsRouter(analyticsService);
+
+  const cacheClient = new RedisCacheAdapter(redisClient);
 
   return {
     db,
