@@ -1,0 +1,49 @@
+{
+  "name": "url-shortener",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "develop": "tsx watch --env-file=.env src/index.ts",
+    "build": "tsc && tsc-alias",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "test": "vitest",
+    "migrations": "tsx --env-file=.env src/database/migration.ts",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@fastify/rate-limit": "^10.3.0",
+    "@fastify/swagger": "^9.7.0",
+    "@fastify/swagger-ui": "^5.2.6",
+    "@isaacs/ttlcache": "^2.1.4",
+    "@jeengbe/cache": "^7.0.0",
+    "fastify": "^5.8.4",
+    "fastify-graceful-shutdown": "^5.0.0",
+    "fastify-type-provider-zod": "^6.1.0",
+    "husky": "^9.1.7",
+    "ioredis": "^5.10.1",
+    "kysely": "^0.28.14",
+    "p-limit": "^7.3.0",
+    "pg": "^8.20.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@testcontainers/postgresql": "^11.14.0",
+    "@tsconfig/node24": "^24.0.4",
+    "@types/node": "^25.5.0",
+    "@types/pg": "^8.20.0",
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.2",
+    "testcontainers": "^11.14.0",
+    "tsc-alias": "^1.8.16",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.57.2",
+    "vitest": "^4.1.4"
+  }
+}

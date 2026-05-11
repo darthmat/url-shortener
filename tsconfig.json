@@ -1,0 +1,21 @@
+{
+  "extends": "@tsconfig/node24",
+  "compilerOptions": {
+    "lib": ["ESNext"],
+
+    "sourceMap": true,
+    "inlineSources": true,
+    "esModuleInterop": true,
+    "sourceRoot": "/app",
+
+    "paths": {
+      "@/*": ["${configDir}/src/*"]
+    },
+
+    "rootDir": "${configDir}/src",
+    "outDir": "${configDir}/dist",
+
+    "noUncheckedIndexedAccess": true
+  },
+  "include": ["${configDir}/src/**/*"]
+}
