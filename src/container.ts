@@ -42,12 +42,9 @@ export async function container(config: Config, logger: FastifyBaseLogger) {
   const urlRouter = new UrlRouter(urlService, urlEventPublisher, logger);
   const analyticsRouter = new AnalyticsRouter(analyticsService);
 
-  const cacheClient = new RedisCacheAdapter(redisClient);
-
   return {
     db,
     redisClient,
-    cacheClient,
     healthzRouter,
     urlRouter,
     analyticsRouter,
