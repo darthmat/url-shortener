@@ -4,7 +4,7 @@ import {
   IAnalyticsRepository,
   IAnalyticsService,
 } from './analytics.interface.js';
-import { AnalyticDTO } from './analytics.dto.js';
+import { AnalyticDTO, AnalyticReportDTO } from './analytics.dto.js';
 import { URL_ANALYTIC_EVENT } from '../url/url.publisher.js';
 
 export class AnalyticsServiceImpl implements IAnalyticsService {
@@ -12,7 +12,7 @@ export class AnalyticsServiceImpl implements IAnalyticsService {
     shortCode: string,
     ipAddress: string,
   ) => void;
-  private readonly batch: Pick<AnalyticDTO, 'shortCode' | 'ipAddress'>[] = [];
+  private readonly batch: AnalyticDTO[] = [];
   private readonly batchSize = 100;
   constructor(
     private readonly analyticsRepository: IAnalyticsRepository,
@@ -32,9 +32,7 @@ export class AnalyticsServiceImpl implements IAnalyticsService {
     this.eventEmitter.on(URL_ANALYTIC_EVENT, this.onGetAnalytic);
   }
 
-  private async saveAnalytic(
-    batch: Pick<AnalyticDTO, 'shortCode' | 'ipAddress'>[],
-  ): Promise<void> {
+  private async saveAnalytic(batch: AnalyticDTO[]): Promise<void> {
     await this.analyticsRepository
       .saveAnalytic(batch)
       .catch((error: unknown) => {
@@ -45,7 +43,9 @@ export class AnalyticsServiceImpl implements IAnalyticsService {
       });
   }
 
-  async getAnalyticsByShortCode(shortCode: string): Promise<AnalyticDTO[]> {
+  async getAnalyticsByShortCode(
+    shortCode: string,
+  ): Promise<AnalyticReportDTO | null> {
     return await this.analyticsRepository.getAnalyticsByShortCode(shortCode);
   }
 }
