@@ -9,11 +9,15 @@ import { UrlService } from './modules/url/url.service.js';
 import { CachedUrlService } from './modules/url/url.service.cached.js';
 import { UrlRouter } from './modules/url/url.router.js';
 import { Cache } from '@jeengbe/cache/dist/cache.js';
+import { UrlEventPublisher } from './modules/url/url.publisher.js';
+import EventEmitter from 'events';
 
 export async function container(config: Config, logger: FastifyBaseLogger) {
   const db = createDatabase(config.database);
+  const appEvents = new EventEmitter();
   const redisClient = await createRedisClient(config);
   const cacheClient = new RedisCacheAdapter(redisClient);
+  const urlEventPublisher = new UrlEventPublisher(appEvents);
 
   const healthzRouter = new HealthzRouter();
   const urlRouter = new UrlRouter(
@@ -21,6 +25,8 @@ export async function container(config: Config, logger: FastifyBaseLogger) {
       new UrlService(new UrlRepository(db)),
       new Cache(cacheClient),
     ),
+    urlEventPublisher,
+    logger,
   );
 
   return { db, redisClient, cacheClient, healthzRouter, urlRouter };

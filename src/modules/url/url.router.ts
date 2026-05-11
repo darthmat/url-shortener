@@ -1,9 +1,13 @@
-import { FastifyInstance } from 'fastify';
-import { IUrlService } from './url.interface.js';
+import { FastifyBaseLogger, FastifyInstance } from 'fastify';
+import { IUrlEventPublisher, IUrlService } from './url.interface.js';
 import { EntityNotFoundError, ExpiredError } from '@/utils/errors.js';
 
 export class UrlRouter {
-  constructor(private readonly urlService: IUrlService) {}
+  constructor(
+    private readonly urlService: IUrlService,
+    private readonly urlEventPublisher: IUrlEventPublisher,
+    private readonly log: FastifyBaseLogger,
+  ) {}
   register(fastify: FastifyInstance) {
     fastify.get('/urls/:shortCode', async (req, res) => {
       const { shortCode } = req.params as { shortCode: string };
@@ -17,7 +21,16 @@ export class UrlRouter {
         throw new ExpiredError('URL has expired');
       }
 
-      res.redirect(url.originalUrl.toString(), 302);
+      this.urlEventPublisher
+        .urlAnalytic(shortCode, req.ip)
+        .catch((err: unknown) => {
+          this.log.error(
+            { err, shortCode },
+            'Failed to publish analytic event',
+          );
+        });
+
+      return await res.redirect(url.originalUrl.toString(), 302);
     });
 
     fastify.post('/urls', async (req, res) => {
@@ -27,7 +40,8 @@ export class UrlRouter {
       };
 
       await this.urlService.shortenUrl(originalUrl, expiresAt);
-      res.status(201).send();
+
+      return await res.status(201).send();
     });
   }
 }
