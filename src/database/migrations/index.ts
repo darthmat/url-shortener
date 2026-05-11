@@ -1,12 +1,13 @@
 import { MigrationProvider, Migration } from 'kysely';
 import { initialMigration } from './00_initial.js';
+import { analyticsTableMigration } from './91_createAnalyticTable.js';
 
 /**
  * Database migrations in order; oldest first
  *
  * Important: Do not change the order of migrations once they have been applied to the database!
  */
-const migrations: Migration[] = [initialMigration];
+const migrations: Migration[] = [initialMigration, analyticsTableMigration];
 
 export class UrlShortenerMigrationProvider implements MigrationProvider {
   async getMigrations(): Promise<Record<string, Migration>> {
