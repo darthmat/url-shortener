@@ -1,9 +1,9 @@
 import { Migrator } from 'kysely';
-import { dbConfig } from '../dbConfig.js';
 import { createDatabase } from './db.js';
 import { UrlShortenerMigrationProvider } from './migrations/index.js';
+import { config } from '@/config.js';
 
-await using db = createDatabase(dbConfig);
+await using db = createDatabase(config.database);
 
 const migrator = new Migrator({
   db,

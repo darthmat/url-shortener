@@ -1,8 +1,8 @@
 import { PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
-import { DbConfig } from '../dbConfig.js';
+import { DatabaseConfig } from './db.js';
 
-export function createKyselyDialect(config: DbConfig): PostgresDialect {
+export function createKyselyDialect(config: DatabaseConfig): PostgresDialect {
   return new PostgresDialect({
     pool: new Pool({
       host: config.host,

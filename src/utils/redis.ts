@@ -3,10 +3,10 @@ import assert from 'assert';
 import { Redis, RedisOptions } from 'ioredis';
 
 export interface RedisConfig {
-  host?: string;
-  port?: number;
+  host: string;
+  port: number;
   password?: string;
-  db?: number;
+  db: number;
 }
 
 export async function createRedisClient(config: Config): Promise<Redis> {

@@ -9,7 +9,6 @@ import {
   validatorCompiler,
 } from 'fastify-type-provider-zod';
 import { container } from './container.js';
-import { dbConfig } from './dbConfig.js';
 import { errorHandler } from './utils/errors.js';
 import { config } from './config.js';
 
@@ -21,7 +20,7 @@ async function start() {
       db,
       redisClient: redis,
       healthzRouter,
-    } = await container(config, dbConfig, app.log);
+    } = await container(config, app.log);
 
     app.setValidatorCompiler(validatorCompiler);
     app.setSerializerCompiler(serializerCompiler);
