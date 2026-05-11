@@ -1,7 +1,7 @@
 import z from 'zod';
 
 const accessLogSchema = z.object({
-  ipAddress: z.string(),
+  ipAddress: z.ipv4(),
   createdAt: z.coerce.date(),
 });
 
@@ -15,7 +15,7 @@ export const analyticReportDTOSchema = z.object({
 
 export const analyticDTOSchema = z.object({
   shortCode: z.string(),
-  ipAddress: z.string(),
+  ipAddress: z.ipv4(),
 });
 
 export const urlParamsSchema = z.object({
