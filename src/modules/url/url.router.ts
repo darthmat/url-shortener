@@ -13,14 +13,6 @@ export class UrlRouter {
       const { shortCode } = req.params as { shortCode: string };
       const url = await this.urlService.getOriginalUrl(shortCode);
 
-      if (!url) {
-        throw new EntityNotFoundError('URL not found');
-      }
-
-      if (url.expiresAt < new Date()) {
-        throw new ExpiredError('URL has expired');
-      }
-
       this.urlEventPublisher
         .urlAnalytic(shortCode, req.ip)
         .catch((err: unknown) => {
@@ -29,6 +21,14 @@ export class UrlRouter {
             'Failed to publish analytic event',
           );
         });
+
+      if (!url) {
+        throw new EntityNotFoundError('URL not found');
+      }
+
+      if (url.expiresAt < new Date()) {
+        throw new ExpiredError('URL has expired');
+      }
 
       return await res.redirect(url.originalUrl.toString(), 302);
     });

@@ -21,6 +21,7 @@ async function start() {
       redisClient: redis,
       healthzRouter,
       urlRouter,
+      analyticsRouter,
     } = await container(config, app.log);
 
     app.setValidatorCompiler(validatorCompiler);
@@ -43,6 +44,7 @@ async function start() {
       (instance, _, done) => {
         healthzRouter.register(instance);
         urlRouter.register(instance);
+        analyticsRouter.register(instance);
         done();
       },
       { prefix: '/api' },

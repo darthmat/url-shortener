@@ -5,6 +5,7 @@ export type Database = Kysely<UrlShortenerDatabaseTables>;
 
 export interface UrlShortenerDatabaseTables {
   url: UrlTable;
+  analytics: AnalyticsTable;
 }
 
 interface UrlTable {
@@ -12,4 +13,11 @@ interface UrlTable {
   original_url: string;
   created_at: Generated<Date>;
   expires_at: Generated<Date>;
+}
+
+interface AnalyticsTable {
+  id: Generated<number>;
+  short_code: string;
+  ip_address: string;
+  created_at: Generated<Date>;
 }

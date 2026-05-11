@@ -11,6 +11,9 @@ import { UrlRouter } from './modules/url/url.router.js';
 import { Cache } from '@jeengbe/cache/dist/cache.js';
 import { UrlEventPublisher } from './modules/url/url.publisher.js';
 import EventEmitter from 'events';
+import { AnalyticsServiceImpl } from './modules/analytics/analytics.service.js';
+import { AnalyticsRepository } from './modules/analytics/analytics.repository.js';
+import { AnalyticsRouter } from './modules/analytics/analytics.router.js';
 
 export async function container(config: Config, logger: FastifyBaseLogger) {
   const db = createDatabase(config.database);
@@ -29,5 +32,22 @@ export async function container(config: Config, logger: FastifyBaseLogger) {
     logger,
   );
 
-  return { db, redisClient, cacheClient, healthzRouter, urlRouter };
+  const analyticsService = new AnalyticsServiceImpl(
+    new AnalyticsRepository(db),
+    appEvents,
+    logger,
+  );
+
+  analyticsService.registerListeners();
+
+  const analyticsRouter = new AnalyticsRouter(analyticsService);
+
+  return {
+    db,
+    redisClient,
+    cacheClient,
+    healthzRouter,
+    urlRouter,
+    analyticsRouter,
+  };
 }
