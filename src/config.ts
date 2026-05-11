@@ -9,16 +9,6 @@ export const envSchema = z.object({
     password: z.string().optional(),
     db: z.number().default(0),
   }),
-  api: z.object({
-    rawg: z.object({
-      base: z.string(),
-      key: z.string(),
-    }),
-    itad: z.object({
-      base: z.string(),
-      key: z.string(),
-    }),
-  }),
 });
 
 export const config = envSchema.parse({
@@ -29,16 +19,6 @@ export const config = envSchema.parse({
     port: process.env.REDIS_PORT,
     password: process.env.REDIS_PASSWORD,
     db: process.env.REDIS_DB,
-  },
-  api: {
-    rawg: {
-      base: process.env.RAWG_BASE_URL,
-      key: process.env.RAWG_API_KEY,
-    },
-    itad: {
-      base: process.env.ITAD_BASE_URL,
-      key: process.env.ITAD_API_KEY,
-    },
   },
 });
 
