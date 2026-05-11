@@ -29,7 +29,7 @@ async function start() {
     app.setErrorHandler(errorHandler);
 
     app.register(fastifySwagger, {
-      openapi: { info: { title: 'Games API', version: '1.0.0' } },
+      openapi: { info: { title: 'Url Shortener API', version: '1.0.0' } },
       transform: jsonSchemaTransform,
     });
     app.register(fastifySwaggerUi, { routePrefix: '/docs' });
