@@ -10,17 +10,11 @@ export const initialMigration: Migration = {
       .addColumn('short_code', 'varchar', (col) =>
         col.notNull().primaryKey().unique(),
       )
-      .addColumn('original_url', 'varchar', (col) => col.notNull())
+      .addColumn('original_url', 'text', (col) => col.notNull())
       .addColumn('created_at', 'timestamp', (col) =>
         col.defaultTo(sql`now()`).notNull(),
       )
       .addColumn('expires_at', 'timestamp', (col) => col.notNull())
-      .execute();
-
-    await db.schema
-      .createIndex('url_short_code_idx')
-      .on('url')
-      .column('short_code')
       .execute();
   },
   async down(db) {

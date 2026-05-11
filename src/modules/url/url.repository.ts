@@ -7,12 +7,15 @@ import { Url } from './url.model.js';
 export class UrlRepository implements IUrlRepository {
   constructor(private readonly db: Database) {}
   async createUrl(url: Url): Promise<void> {
-    this.db.insertInto('url').values({
-      original_url: url.originalUrl.toString(),
-      short_code: url.shortCode,
-      created_at: url.createdAt,
-      expires_at: url.expiresAt,
-    });
+    await this.db
+      .insertInto('url')
+      .values({
+        original_url: url.originalUrl.toString(),
+        short_code: url.shortCode,
+        created_at: url.createdAt,
+        expires_at: url.expiresAt,
+      })
+      .execute();
   }
 
   async getUrlByShortCode(shortCode: string): Promise<Url | null> {
