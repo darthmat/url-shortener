@@ -1,6 +1,6 @@
 import { MigrationProvider, Migration } from 'kysely';
 import { initialMigration } from './00_initial.js';
-import { analyticsTableMigration } from './91_createAnalyticTable.js';
+import { analyticsTableMigration } from './01_createAnalyticTable.js';
 
 /**
  * Database migrations in order; oldest first

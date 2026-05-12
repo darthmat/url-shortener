@@ -49,6 +49,29 @@ describe('AnalyticsService', () => {
         accessLogs: [{ ipAddress: '192.168.1.1', createdAt: new Date() }],
       });
     });
+
+    it('should increase totalAccess', async () => {
+      await analyticsRepository.saveAnalytic([
+        {
+          shortCode: 'test-short-code',
+          createdAt: new Date(),
+          ipAddress: '192.168.1.1',
+        },
+      ]);
+
+      await analyticsRepository.saveAnalytic([
+        {
+          shortCode: 'test-short-code',
+          createdAt: new Date(),
+          ipAddress: '192.168.1.2',
+        },
+      ]);
+
+      const result =
+        await analyticsService.getAnalyticsByShortCode('test-short-code');
+
+      expect(result.totalAccesses).toBe(2);
+    });
   });
 
   describe('saveAnalytic', () => {
@@ -61,9 +84,7 @@ describe('AnalyticsService', () => {
         },
       ];
 
-      await expect(
-        analyticsService.saveAnalytic(batch),
-      ).resolves.toBeUndefined();
+      await analyticsService.saveAnalytic(batch);
 
       const report =
         await analyticsService.getAnalyticsByShortCode('test-short-code');
