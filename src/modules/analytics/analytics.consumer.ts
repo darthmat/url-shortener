@@ -19,7 +19,7 @@ export class AnalyticsConsumer implements IAnalyticsConsumer {
     private readonly batchSize = 100,
   ) {
     this.onGetAnalytic = (shortCode: string, ipAddress: string) => {
-      this.batch.push({ shortCode, ipAddress });
+      this.batch.push({ shortCode, ipAddress, createdAt: new Date() });
 
       if (this.batch.length >= this.batchSize) {
         void this.analyticsService.saveAnalytic(this.batch.splice(0));

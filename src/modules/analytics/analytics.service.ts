@@ -1,11 +1,9 @@
-import EventEmitter from 'events';
 import { FastifyBaseLogger } from 'fastify';
 import {
   IAnalyticsRepository,
   IAnalyticsService,
 } from './analytics.interface.js';
 import { AnalyticDTO, AnalyticReportDTO } from './analytics.dto.js';
-import { URL_ANALYTIC_EVENT } from '../url/url.publisher.js';
 import { EntityNotFoundError } from '@/utils/errors.js';
 
 export class AnalyticsServiceImpl implements IAnalyticsService {

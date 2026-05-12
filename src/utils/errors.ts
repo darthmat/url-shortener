@@ -7,20 +7,6 @@ export class ValidationError extends Error {
   }
 }
 
-export class InternalError extends Error {
-  constructor(cause?: unknown) {
-    super('An internal error occurred.', { cause });
-    this.name = 'InternalError';
-  }
-}
-
-export class UnavailableServiceError extends Error {
-  constructor(readonly error: string) {
-    super(`Service Unavailable: ${error}`);
-    this.name = 'UnavailableService';
-  }
-}
-
 export class ExpiredError extends Error {
   constructor(readonly message: string) {
     super(message);
@@ -59,20 +45,8 @@ export function errorHandler(
     return;
   }
 
-  if (err instanceof InternalError) {
-    res.status(500).send({ message: err.message });
-    return;
-  }
-
   if (err instanceof ValidationError) {
     res.status(400).send({ message: err.message });
-    return;
-  }
-
-  if (err instanceof UnavailableServiceError) {
-    res.status(503).send({
-      message: err.message,
-    });
     return;
   }
 

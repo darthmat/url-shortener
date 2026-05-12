@@ -39,6 +39,7 @@ export class AnalyticsRepository implements IAnalyticsRepository {
         batch.map((b) => ({
           short_code: b.shortCode,
           ip_address: b.ipAddress,
+          created_at: b.createdAt,
         })),
       )
       .execute();

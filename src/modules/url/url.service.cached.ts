@@ -17,10 +17,10 @@ export class CachedUrlService implements IUrlService {
     return await this.delegate.shortenUrl(originalUrl, expiresAt);
   }
 
-  async getOriginalUrl(shortCode: string): Promise<UrlDTO | null> {
+  async getUrl(shortCode: string): Promise<UrlDTO | null> {
     return await this.cache.cached(
       `short-code:${shortCode}`,
-      () => this.delegate.getOriginalUrl(shortCode),
+      () => this.delegate.getUrl(shortCode),
       '1h',
     );
   }

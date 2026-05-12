@@ -8,7 +8,7 @@ export interface IUrlRepository {
 
 export interface IUrlService {
   shortenUrl(originalUrl: string, expiresAt?: Date | null): Promise<UrlDTO>;
-  getOriginalUrl(shortCode: string): Promise<UrlDTO | null>;
+  getUrl(shortCode: string): Promise<UrlDTO | null>;
 }
 
 export interface IUrlEventPublisher {

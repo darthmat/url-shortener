@@ -18,9 +18,17 @@ export function withDatabase() {
   let invalidDb: Database;
 
   beforeAll(async () => {
-    postgresContainer = await new PostgreSqlContainer('postgres:latest')
-      .withDatabase('name_should_not_matter')
-      .withTmpFs({ '/var/lib/postgresql/data': 'rw' })
+    postgresContainer = await new PostgreSqlContainer('postgres:alpine')
+      .withCommand([
+        'postgres',
+        '-c',
+        'fsync=off',
+        '-c',
+        'full_page_writes=off',
+        '-c',
+        'synchronous_commit=off',
+      ])
+      .withStartupTimeout(120_000)
       .start();
 
     db = createDatabase({

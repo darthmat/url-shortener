@@ -10,19 +10,29 @@ export function config(projectDir) {
   return defineConfig({
     resolve: {
       alias: {
-        '@': resolve(projectDir, './src')
+        '@': resolve(projectDir, './src'),
       },
     },
     test: {
       include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
       coverage: {
-        reporter: ['lcov', 'text', 'cobertura'],
+        reporter: ['text'],
+        exclude: [
+          'node_modules/**',
+          'dist/**',
+          '**/__utils__*',
+          '**/__utils__/**',
+          '**/*.d.ts',
+          '**/migrations/**',
+        ],
       },
-      exclude: [...configDefaults.exclude, '**/dist/**'],
+      exclude: [...configDefaults.exclude, '**/dist/**', '__utils__/**'],
       reporters: 'verbose',
       passWithNoTests: true,
       root: projectDir,
       watch: false,
+      testTimeout: 60_000,
+      hookTimeout: 60_000,
     },
   });
 }

@@ -10,6 +10,7 @@
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "test": "vitest",
+    "coverage": "vitest --coverage",
     "migrations": "tsx --env-file=.env src/database/migration.ts",
     "prepare": "husky"
   },
@@ -36,6 +37,7 @@
     "@tsconfig/node24": "^24.0.4",
     "@types/node": "^25.5.0",
     "@types/pg": "^8.20.0",
+    "@vitest/coverage-v8": "4.1.5",
     "eslint": "^10.1.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",

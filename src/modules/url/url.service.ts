@@ -21,7 +21,7 @@ export class UrlService implements IUrlService {
     };
   }
 
-  async getOriginalUrl(shortCode: string): Promise<UrlDTO | null> {
+  async getUrl(shortCode: string): Promise<UrlDTO | null> {
     const url = await this.urlRepository.getUrlByShortCode(shortCode);
 
     if (!url) return null;

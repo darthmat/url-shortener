@@ -2,7 +2,7 @@ import { ValidationError } from '@/utils/errors.js';
 import { nanoid } from 'nanoid';
 
 export class Url {
-  private static readonly minTitleLength = 3;
+  private static readonly minTitleLength = 6;
   private static readonly maxTitleLength = 100;
   readonly originalUrl: URL;
   readonly shortCode: string;
@@ -21,13 +21,13 @@ export class Url {
   static create(data: UrlCreateDTO): Url {
     const url = new URL(data.originalUrl);
 
-    if (data.originalUrl.length < this.minTitleLength) {
+    if (url.hostname.length < this.minTitleLength) {
       throw new ValidationError(
         `Original URL must be at least ${this.minTitleLength} characters long`,
       );
     }
 
-    if (data.originalUrl.length > this.maxTitleLength) {
+    if (url.hostname.length > this.maxTitleLength) {
       throw new ValidationError(
         `Original URL must be at most ${this.maxTitleLength} characters long`,
       );

@@ -1,15 +1,15 @@
-import { FastifyBaseLogger, FastifyInstance } from 'fastify';
-import { IUrlEventPublisher, IUrlService } from './url.interface.js';
 import { EntityNotFoundError, ExpiredError } from '@/utils/errors.js';
+import { FastifyBaseLogger, FastifyInstance } from 'fastify';
 import { ZodTypeProvider } from 'fastify-type-provider-zod';
+import { UrlDTO } from './url.dto.js';
+import { IUrlEventPublisher, IUrlService } from './url.interface.js';
 import {
-  urlParamsSchema,
+  errorSchema,
+  rateLimitSchema,
   urlBodySchema,
   urlDTOSchema,
-  rateLimitSchema,
-  errorSchema,
+  urlParamsSchema,
 } from './url.schema.js';
-import { UrlDTO } from './url.dto.js';
 
 export class UrlRouter {
   constructor(
@@ -35,7 +35,7 @@ export class UrlRouter {
       },
       async (req, res) => {
         const { shortCode } = req.params;
-        const url = await this.urlService.getOriginalUrl(shortCode);
+        const url = await this.urlService.getUrl(shortCode);
 
         this.urlEventPublisher
           .urlAnalytic(shortCode, req.ip)
