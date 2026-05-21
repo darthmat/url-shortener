@@ -2,8 +2,8 @@ import { ValidationError } from '@/utils/errors.js';
 import { nanoid } from 'nanoid';
 
 export class Url {
-  private static readonly minTitleLength = 6;
-  private static readonly maxTitleLength = 100;
+  private static readonly minTLDLength = 2;
+  private static readonly minDomainLength = 2;
   readonly originalUrl: URL;
   readonly shortCode: string;
   readonly createdAt: Date;
@@ -20,16 +20,22 @@ export class Url {
 
   static create(data: UrlCreateDTO): Url {
     const url = new URL(data.originalUrl);
+    const tld = url.hostname.split('.').at(-1);
+    const domain = url.hostname.split('.').at(-2);
 
-    if (url.hostname.length < this.minTitleLength) {
+    if (!url.hostname.includes('.')) {
+      throw new ValidationError('Invalid URL: must contain a valid domain');
+    }
+
+    if (!tld || tld.length < this.minTLDLength) {
       throw new ValidationError(
-        `Original URL must be at least ${this.minTitleLength} characters long`,
+        'Invalid URL: TLD must be at least 2 characters',
       );
     }
 
-    if (url.hostname.length > this.maxTitleLength) {
+    if (!domain || domain.length < this.minDomainLength) {
       throw new ValidationError(
-        `Original URL must be at most ${this.maxTitleLength} characters long`,
+        'Invalid URL: domain must be at least 2 characters',
       );
     }
 

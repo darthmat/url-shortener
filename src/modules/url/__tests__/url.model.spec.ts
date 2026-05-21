@@ -20,19 +20,22 @@ describe('Url', () => {
       expect(url).toBeDefined();
     });
 
-    it('throws validation error when originalUrl is too short', () => {
+    it('throws validation error when domain is too short', () => {
       expect(() =>
-        Url.create({ originalUrl: 'http://e.com', expiresAt: null }),
-      ).toThrow('Original URL must be at least 6 characters long');
+        Url.create({ originalUrl: 'http://.com', expiresAt: null }),
+      ).toThrow('Invalid URL: domain must be at least 2 characters');
     });
 
-    it('throws validation error when originalUrl is too long', () => {
+    it('throws validation error when TLD is too short', () => {
       expect(() =>
-        Url.create({
-          originalUrl: 'http://' + 'a'.repeat(101),
-          expiresAt: null,
-        }),
-      ).toThrow('Original URL must be at most 100 characters long');
+        Url.create({ originalUrl: 'http://example.a', expiresAt: null }),
+      ).toThrow('Invalid URL: TLD must be at least 2 characters');
+    });
+
+    it('throws validation error when url has no domain', () => {
+      expect(() =>
+        Url.create({ originalUrl: 'http://example', expiresAt: null }),
+      ).toThrow('Invalid URL: must contain a valid domain');
     });
 
     it('throws validation error when protocol is incorrect', () => {
