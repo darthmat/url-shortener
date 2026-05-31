@@ -70,4 +70,36 @@ describe('Url', () => {
       expect(url).toBeDefined();
     });
   });
+
+  describe('isExpired', () => {
+    it('returns false when url has no expiration date', () => {
+      const url = Url.create({
+        originalUrl: 'http://example.com',
+        expiresAt: null,
+      });
+
+      expect(url.isExpired()).toBe(false);
+    });
+
+    it('returns false when url is not expired', () => {
+      vi.setSystemTime(new Date('2026-12-17'));
+      const url = Url.create({
+        originalUrl: 'http://example.com',
+        expiresAt: new Date('2026-12-18'),
+      });
+
+      expect(url.isExpired()).toBe(false);
+    });
+
+    it('returns true when url is expired', () => {
+      vi.setSystemTime(new Date('2026-12-15'));
+      const url = Url.create({
+        originalUrl: 'http://example.com',
+        expiresAt: new Date('2026-12-16'),
+      });
+
+      vi.setSystemTime(new Date('2026-12-17'));
+      expect(url.isExpired()).toBe(true);
+    });
+  });
 });
