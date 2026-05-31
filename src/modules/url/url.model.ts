@@ -9,13 +9,11 @@ export class Url {
   readonly createdAt: Date;
   readonly expiresAt: Date | null;
 
-  private constructor(readonly data: UrlData) {
-    ({
-      originalUrl: this.originalUrl,
-      shortCode: this.shortCode,
-      createdAt: this.createdAt,
-      expiresAt: this.expiresAt,
-    } = data);
+  private constructor(data: UrlData) {
+    this.originalUrl = data.originalUrl;
+    this.shortCode = data.shortCode;
+    this.createdAt = data.createdAt;
+    this.expiresAt = data.expiresAt;
   }
 
   static create(data: UrlCreateDTO): Url {
