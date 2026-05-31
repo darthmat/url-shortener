@@ -24,10 +24,10 @@ describe('UrlService', () => {
   });
 
   describe('getUrl', () => {
-    it('should return null when url does not exist', async () => {
-      const result = await urlService.getUrl('non-existent-short-code');
-
-      expect(result).toBeNull();
+    it('should throw an error when url does not exist', async () => {
+      await expect(
+        urlService.getUrl('non-existent-short-code'),
+      ).rejects.toThrow('URL not found');
     });
 
     it('should return an UrlDTO when url exists', async () => {

@@ -1,4 +1,3 @@
-import { EntityNotFoundError, ExpiredError } from '@/utils/errors.js';
 import { FastifyBaseLogger, FastifyInstance } from 'fastify';
 import { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { UrlDTO } from './url.dto.js';
@@ -37,6 +36,7 @@ export class UrlRouter {
         const { shortCode } = req.params;
         const url = await this.urlService.getUrl(shortCode);
 
+        // Intentionally — we track all access attempts
         this.urlEventPublisher
           .urlAnalytic(shortCode, req.ip)
           .catch((err: unknown) => {
@@ -45,14 +45,6 @@ export class UrlRouter {
               'Failed to publish analytic event',
             );
           });
-
-        if (!url) {
-          throw new EntityNotFoundError('URL not found');
-        }
-
-        if (url.expiresAt && url.expiresAt < new Date()) {
-          throw new ExpiredError('URL has expired');
-        }
 
         return await res.redirect(url.originalUrl, 302);
       },

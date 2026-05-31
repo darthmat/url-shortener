@@ -60,6 +60,10 @@ export class Url {
   static fromData(data: UrlData): Url {
     return new Url(data);
   }
+
+  isExpired(): boolean {
+    return !!this.expiresAt && this.expiresAt < new Date();
+  }
 }
 
 export interface UrlData {
